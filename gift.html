@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
+  <title>Mở hộp quà</title>
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+  <!-- CSS tối ưu tích hợp -->
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Dancing Script', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      background: #fff;
+      position: relative;
+      animation: baseFade 10s ease-in-out infinite;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: radial-gradient(circle, #ff69b4 0%, transparent 70%);
+      opacity: 0.5;
+      mix-blend-mode: overlay;
+      z-index: 1;
+    }
+
+    body::before {
+      animation: waterColor1 12s ease-in-out infinite;
+    }
+
+    body::after {
+      transform: scale(1.5);
+      animation: waterColor2 15s ease-in-out infinite;
+    }
+
+    @keyframes baseFade {
+      0%, 100% { background: #fff; }
+      50% { background: #fff0f5; }
+    }
+
+    @keyframes waterColor1 {
+      0% { transform: translate(-20%, -20%) scale(1); opacity: 0.3; }
+      50% { transform: translate(20%, 20%) scale(1.2); opacity: 0.6; }
+      100% { transform: translate(-20%, -20%) scale(1); opacity: 0.3; }
+    }
+
+    @keyframes waterColor2 {
+      0% { transform: translate(30%, 30%) scale(1.5); opacity: 0.4; }
+      50% { transform: translate(-30%, -30%) scale(1.8); opacity: 0.7; }
+      100% { transform: translate(30%, 30%) scale(1.5); opacity: 0.4; }
+    }
+
+    .container {
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .joke-text, .gift-box, .final-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+    }
+
+    .joke-text h1 {
+      font-size: 3rem;
+      color: #ff69b4;
+      text-shadow: 2px 2px 4px #fff;
+    }
+
+    .joke-text p {
+      font-size: 2rem;
+      color: #ff69b4;
+      text-shadow: 1px 1px 3px #fff;
+      margin-top: 10px;
+    }
+
+    .gift-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .gift-box img {
+      width: 200px;
+      cursor: pointer;
+    }
+
+    .gift-box p {
+      font-size: 1.5rem;
+      color: #ff69b4;
+      text-shadow: 1px 1px 3px #fff;
+      margin-top: 20px;
+    }
+
+    .final-text p {
+      font-size: 2.5rem;
+      color: #ff69b4;
+      text-shadow: 2px 2px 4px #fff;
+    }
+
+    /* Dải dây confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 30px;
+      border-radius: 5px;
+      z-index: 15;
+      transform-origin: center;
+    }
+
+    @media (max-width: 500px) {
+      .joke-text h1 { font-size: 2rem; }
+      .joke-text p { font-size: 1.5rem; }
+      .gift-box img { width: 150px; }
+      .gift-box p { font-size: 1.2rem; margin-top: 15px; }
+      .final-text p { font-size: 1.8rem; }
+      .confetti { width: 8px; height: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Thông điệp ban đầu -->
+    <div class="joke-text">
+      <h1>Đùa đấy sao thổi nến online được 😂</h1>
+      <p>Giờ anh sẽ có quà tặng em nha!</p>
+    </div>
+    <!-- Hộp quà -->
+    <div class="gift-box" style="display: none;">
+      <img src="./img/a.png" alt="Gift Box" id="giftImage">
+      <p>Ấn vào hộp quà</p>
+    </div>
+    <!-- Thông điệp cuối -->
+    <div class="final-text" style="display: none;">
+      <p>Chắc em nhận được ngày hôm nay rồi đó! 🎉<br>Mong em nhận món quà này và đừng có từ chối hoặc ngại nhận nhé :D<br>Lâu lâu mới có dịp v nên cứ nhận đi<br> Giờ em có thể thoát ra đc rồi</p>
+    </div>
+  </div>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <!-- JS tối ưu tích hợp -->
+  <script>
+    // Hiệu ứng thông điệp ban đầu (2s)
+    gsap.from(".joke-text h1", { duration: 2, y: -50, opacity: 0, ease: "power2.out" });
+    gsap.from(".joke-text p", { duration: 2, y: 50, opacity: 0, ease: "power2.out", delay: 1 });
+
+    // Hiển thị hộp quà sau 5s
+    setTimeout(() => {
+      document.querySelector(".joke-text").style.display = "none";
+      document.querySelector(".gift-box").style.display = "flex";
+      gsap.from("#giftImage", { duration: 2, scale: 0, opacity: 0, ease: "elastic.out(1, 0.5)" });
+      gsap.from(".gift-box p", { duration: 2, y: 20, opacity: 0, ease: "power2.out", delay: 0.5 });
+    }, 5000);
+
+    // Hàm tạo dải dây confetti
+    function createConfetti() {
+      const confettiCount = 20; // Tăng lên 20 dải dây
+      const colors = ["#ff69b4", "#ff1493", "#da70d6", "#87ceeb", "#ffd700"]; // Nhiều màu sắc
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = "50%";
+        confetti.style.top = "50%";
+        confetti.style.background = colors[i % colors.length]; // Chọn màu ngẫu nhiên từ danh sách
+        document.body.appendChild(confetti);
+
+        // Animation dải dây bay ra
+        gsap.to(confetti, {
+          duration: 3, // Tăng thời gian bay lên 1.5s
+          x: Math.random() * 500 - 250, // Bay ngang rộng hơn
+          y: Math.random() * -400 - 100, // Bay lên cao hơn
+          rotation: Math.random() * 720, // Xoay nhiều vòng hơn
+          opacity: 0,
+          ease: "power2.out",
+          onComplete: () => confetti.remove() // Xóa sau khi hoàn thành
+        });
+      }
+    }
+
+    // Sự kiện nhấn vào hộp quà
+    document.getElementById("giftImage").addEventListener("click", () => {
+      // Tạo dải dây trước khi thu nhỏ
+      createConfetti();
+      
+      gsap.to("#giftImage", {
+        duration: 0.5,
+        scale: 0.5,
+        ease: "power2.in",
+        delay: 1, // Chờ 1s để dải dây bay gần hết
+        onComplete: () => {
+          document.querySelector(".gift-box").style.display = "none";
+          document.querySelector(".final-text").style.display = "block";
+          gsap.from(".final-text p", { duration: 1, y: 50, opacity: 0, ease: "power2.out" });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
